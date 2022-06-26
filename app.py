@@ -60,7 +60,7 @@ def handle_message(event):
             event.reply_token,
             TextSendMessage(text="你很有禮毛餒")
         )
-    elif event.message.text == "功能":
+    elif input_text == "功能":
         exhibit = 0
         line_bot_api.reply_message(
             event.reply_token,
