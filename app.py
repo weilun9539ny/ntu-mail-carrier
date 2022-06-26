@@ -80,13 +80,6 @@ def handle_message(event):
             [TextSendMessage(text="蛤?"),
             TextSendMessage(text="聽不懂你在說啥餒")]
         )
-
-
-def homework_check(event):
-    if event.message.text == "hello":
-        print("ok")
-
-
 # Finish defining functions
 
 
