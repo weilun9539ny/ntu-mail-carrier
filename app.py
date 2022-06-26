@@ -1,3 +1,4 @@
+# Import libraries
 from flask import Flask, request, abort
 
 from linebot import (
@@ -8,15 +9,24 @@ from linebot.exceptions import (
 )
 from linebot.models import (
     MessageEvent, TextMessage, TextSendMessage,
+    TemplateSendMessage, ConfirmTemplate, MessageAction,
+    QuickReply, QuickReplyButton,
+    PostbackAction
 )
 import os
 
+from crawler import Crawler
+# Finish importing libraries
+
+# Initialization
 app = Flask(__name__)
 
 line_bot_api = LineBotApi('quud2/CCW6i43uHAomVe8bMzRjHXbH5i/uqv82BmH6KqEa1BtTn1DU+U1yEnS6W90Sd1y+OW9QSsEmxNU83vl1RQcnj/7c4Qe2B8kSoz4sbzlbNTb1db9ygfHr3nobUlBu9ZWNj5bQFn+wPQ2dc7tgdB04t89/1O/w1cDnyilFU=')
 handler = WebhookHandler('27893c48e684e0563636ed0a27674e51')
+# Finish initializing
 
 
+# Define functions
 @app.route("/callback", methods=['POST'])
 def callback():
     # get X-Line-Signature header value
@@ -38,18 +48,51 @@ def callback():
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
-    if event.message.text == "阿彌陀佛狒狒":
+    input_text = event.message.text
+
+    if input_text == "阿彌陀佛狒狒":
         line_bot_api.reply_message(
             event.reply_token,
-            TextSendMessage(text=event.message.text))
+            TextSendMessage(text=event.message.text)
+        )
+    if input_text =="謝謝":
+        line_bot_api.reply_message(
+            event.reply_token,
+            TextSendMessage(text="你很有禮毛餒")
+        )
+    elif event.message.text == "功能":
+        exhibit = 0
+        line_bot_api.reply_message(
+            event.reply_token,
+            TextSendMessage(
+                text="目前只有提醒作業的功能，是否觀看說明？",
+                quick_reply=QuickReply(
+                    items=[
+                        QuickReplyButton(action=MessageAction(label="是", text="Ok!")),
+                        QuickReplyButton(action=MessageAction(label="否", text="No!"))
+                    ]
+                )
+            )
+        )
     else:
         line_bot_api.reply_message(
             event.reply_token,
-            TextSendMessage(text="蛤?")
+            [TextSendMessage(text="蛤?"),
+            TextSendMessage(text="聽不懂你在說啥餒")]
         )
 
 
+def homework_check(event):
+    if event.message.text == "hello":
+        print("ok")
+
+
+# Finish defining functions
+
+
+# Run the program
 if __name__ == "__main__":
     # app.run()
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
+# Finish running the program
