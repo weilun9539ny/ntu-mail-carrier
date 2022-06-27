@@ -11,7 +11,7 @@ from linebot.models import (
     MessageEvent, TextMessage, TextSendMessage,
     TemplateSendMessage, ConfirmTemplate, MessageAction,
     QuickReply, QuickReplyButton,
-    PostbackAction
+    PostbackAction, PostbackEvent
 )
 import os
 
@@ -69,7 +69,12 @@ def handle_message(event):
                 quick_reply=QuickReply(
                     items=[
                         QuickReplyButton(action=MessageAction(label="是", text="Ok!")),
-                        QuickReplyButton(action=MessageAction(label="否", text="No!"))
+                        QuickReplyButton(action=MessageAction(label="否", text="No!")),
+                        QuickReplyButton(action=PostbackAction(
+                            label="postback",
+                            display_text="postback text",
+                            data="postback_data"
+                        ))
                     ]
                 )
             )
@@ -80,12 +85,25 @@ def handle_message(event):
             [TextSendMessage(text="蛤?"),
             TextSendMessage(text="聽不懂你在說啥餒")]
         )
+
+
+@handler.add(PostbackEvent)
+def handle_postback(event):
+    if event == "postback_data":
+        line_bot_api.reply_message(
+            event.reply_token,
+            TextSendMessage(text="說明文")
+        )
+    else:
+        line_bot_api.reply_message(
+            event.reply_token,
+            TextSendMessage(text="答錯")
+        )
 # Finish defining functions
 
 
 # Run the program
 if __name__ == "__main__":
-    # app.run()
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
 # Finish running the program
