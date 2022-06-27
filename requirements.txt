@@ -2,3 +2,7 @@ line-bot-sdk
 flask
 numpy
 psycopg2
+beautifulsoup4
+json
+requests
+datetime
