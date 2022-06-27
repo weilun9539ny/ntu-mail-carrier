@@ -14,6 +14,7 @@ from linebot.models import (
     PostbackAction, PostbackEvent
 )
 import os
+import psycopg2
 
 from crawler import Crawler
 # Finish importing libraries
@@ -68,37 +69,33 @@ def handle_message(event):
                 text="目前只有提醒作業的功能，是否觀看說明？",
                 quick_reply=QuickReply(
                     items=[
-                        QuickReplyButton(action=MessageAction(label="是", text="Ok!")),
-                        QuickReplyButton(action=MessageAction(label="否", text="No!")),
                         QuickReplyButton(action=PostbackAction(
-                            label="postback",
-                            display_text="postback text",
-                            data="postback_data"
-                        ))
+                            label="是",
+                            display_text="是",
+                            data="show_description")),
+                        QuickReplyButton(action=MessageAction(label="否", text="否"))
                     ]
                 )
             )
-        )
-    else:
-        line_bot_api.reply_message(
-            event.reply_token,
-            [TextSendMessage(text="蛤?"),
-            TextSendMessage(text="聽不懂你在說啥餒")]
         )
 
 
 @handler.add(PostbackEvent)
 def handle_postback(event):
-    if event == "postback_data":
+    if event.data == "show_description":
         line_bot_api.reply_message(
             event.reply_token,
-            TextSendMessage(text="說明文")
+            [TextSendMessage(text="說明文"), TextSendMessage(text=str(event.source.userID))]
         )
     else:
         line_bot_api.reply_message(
             event.reply_token,
             TextSendMessage(text="答錯")
         )
+
+
+# def update_account():
+
 # Finish defining functions
 
 
