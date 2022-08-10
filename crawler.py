@@ -13,10 +13,11 @@ from mail import Mail
 
 # Define a class
 class Crawler:
-    def __init__(self, account, password, last_uid):
-        self.account = account
-        self.password = password
-        self.last_uid = last_uid
+    def __init__(self, user_data_list):
+        self.user_line = user_data_list[0]
+        self.account = user_data_list[1]
+        self.password = user_data_list[2]
+        self.last_uid = user_data_list[3]
 
 
     def _login(self, s):
@@ -42,42 +43,7 @@ class Crawler:
         # Login with user and password
         login_req = s.post(login_url, data=login_data, allow_redirects=True,
                             headers=headers)
-        mailbox = bs4(login_req.text, "html.parser")
         time.sleep(2)
-
-
-    def get_mail(self):
-        # Set up
-        inbox_url = "https://wmail1.cc.ntu.edu.tw/rc/?_task=mail&_action=list&_refresh=1&_layout=widescreen&_mbox=INBOX&_remote=1"
-        mail_list = []
-        i_mail = 0
-        # Finish setting up
-
-        with requests.Session() as s:
-            self._login(s)
-            r = s.get(inbox_url)
-            mail_box = json.loads(r.text)
-            existing_mail = mail_box["env"]["exists"]
-            mails = mail_box["exec"].split("\n")[4:-2]
-
-            while True:
-                if i_mail >= existing_mail:
-                    break  # Prevent the situation that running out of index
-
-                # Get a mail object
-                mail = mails[i_mail]
-                new_mail = self._mail_info_intepreter(mail)
-                # Finish getting a mail object
-
-                # Check if the mail was crawled
-                if new_mail.uid == self.last_uid:
-                    break
-                # Finish checking older mail
-
-                mail_list.append(new_mail)  # Store the information
-                i_mail += 1
-            time.sleep(2)
-        return mail_list
 
 
     def _mail_info_intepreter(self, mail):
@@ -108,14 +74,71 @@ class Crawler:
         new_mail = Mail(mail_id, subject, date, sender, email_address)
         # Finish creating a mail object
         return new_mail
+
+
+    def get_mail(self, last_uid):
+        # Set up
+        inbox_url = "https://wmail1.cc.ntu.edu.tw/rc/?_task=mail&_action=list&_refresh=1&_layout=widescreen&_mbox=INBOX&_remote=1"
+        mail_list = []
+        i_mail = 0
+        # Finish setting up
+
+        with requests.Session() as s:
+            self._login(s)
+            r = s.get(inbox_url)
+            mail_box = json.loads(r.text)
+            existing_mail = mail_box["env"]["exists"]
+            mails = mail_box["exec"].split("\n")[4:-2]
+
+            while True:
+                if i_mail >= existing_mail:
+                    break  # Prevent the situation that running out of index
+
+                # Get a mail object
+                mail = mails[i_mail]
+                new_mail = self._mail_info_intepreter(mail)
+                # Finish getting a mail object
+
+                # Check if the mail was crawled
+                if new_mail.uid == last_uid:
+                    break
+                # Finish checking older mail
+
+                mail_list.append(new_mail)  # Store the information
+                i_mail += 1
+            time.sleep(2)
+        return mail_list
+
+
+    def get_last_mail_id(self):
+        # Set up
+        inbox_url = "https://wmail1.cc.ntu.edu.tw/rc/?_task=mail&_action=list&_refresh=1&_layout=widescreen&_mbox=INBOX&_remote=1"
+        # Finish setting up
+
+        with requests.Session() as s:
+            self._login(s)
+            r = s.get(inbox_url)
+            mail_box = json.loads(r.text)
+
+            # Get a mail object
+            first_mail = mail_box["exec"].split("\n")[4]
+            first_mail = self._mail_info_intepreter(first_mail)
+            # Finish getting a mail object
+
+            time.sleep(2)
+            last_uid = first_mail.uid
+            return last_uid
 # Finish defining a class
 
 
 # Test code
-account = "b09207052"
-password = "Chaeyoung0423"
+if __name__ == "__main__":
+    account = "b09207052"
+    password = "Chaeyoung0423"
 
-crawler = Crawler(account, password, 2810)
-mail = crawler.get_mail()
-print(mail)
+    crawler = Crawler(account, password)
+    # mail = crawler.get_mail()
+    uid = crawler.get_last_mail_id()
+    # print(mail)
+    print(uid)
 # Finish testing code 

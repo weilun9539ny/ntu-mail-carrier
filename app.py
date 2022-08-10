@@ -17,6 +17,7 @@ import os
 import psycopg2
 
 from crawler import Crawler
+
 # Finish importing libraries
 
 # Initialization
@@ -54,48 +55,47 @@ def handle_message(event):
     if input_text == "阿彌陀佛狒狒":
         line_bot_api.reply_message(
             event.reply_token,
-            TextSendMessage(text=event.message.text)
+            TextSendMessage(text=input_text)
         )
-    if input_text =="謝謝":
+    if input_text == "謝謝":
         line_bot_api.reply_message(
             event.reply_token,
             TextSendMessage(text="你很有禮毛餒")
         )
-    elif input_text == "功能":
-        exhibit = 0
+    if input_text == "show user id":
+        line_bot_api.reply_message(
+            event.reply_token, text=str(event.source.user_id)
+        )
+    if input_text == "NTU mail crawler":
         line_bot_api.reply_message(
             event.reply_token,
             TextSendMessage(
-                text="目前只有提醒作業的功能，是否觀看說明？",
-                quick_reply=QuickReply(
-                    items=[
-                        QuickReplyButton(action=PostbackAction(
-                            label="是",
-                            display_text="是",
-                            data="show_description")),
-                        QuickReplyButton(action=MessageAction(label="否", text="否"))
-                    ]
-                )
-            )
+                text=
+                    """本功能可以每小時都檢查一次您的 NTU 信箱有沒有新的信，\n
+                    有的話就在這邊提醒你。\n
+                    但是會需要輸入您的記中帳密，\n
+                    並且會將該帳密和最新一封信件的編號儲存在線上資料庫。\n
+                    如有資安上的疑慮，請勿使用本功能。\n
+                    如果同意以上說明，且欲開啟本功能，
+                    請輸入「確認使用 NTU mail crawler」。""")
         )
-
-
-@handler.add(PostbackEvent)
-def handle_postback(event):
-    if event.data == "show_description":
+    if input_text == "確認使用 NTU mail crawler":
         line_bot_api.reply_message(
             event.reply_token,
-            [TextSendMessage(text="說明文"), TextSendMessage(text=str(event.source.userID))]
+            TextSendMessage(text="""好的，已開啟此功能。\n
+                接下來請按照下面格式輸入記中帳密：\n
+                「crawler new account b09207052 A123456789」。\n
+                （如果之後要更新帳號，可以輸入「crawler update account」）\n
+                除此之外，輸入帳密之前，請確定收件匣中至少有一封信~""")
         )
-    else:
-        line_bot_api.reply_message(
-            event.reply_token,
-            TextSendMessage(text="答錯")
-        )
-
-
-# def update_account():
-
+    if "crawler" in input_text:
+        if "new account" in input_text:
+            # Collect user information
+            user_account = input_text.split(" ")[-2]
+            password = input_text.split(" ")[-1]
+            crawler = Crawler(user_account, password)
+            last_uid = crawler.get_last_mail_id()
+            # Finish collecting user information
 # Finish defining functions
 
 
