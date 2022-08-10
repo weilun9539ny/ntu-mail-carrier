@@ -17,7 +17,7 @@ import os
 import psycopg2
 
 from crawler import Crawler
-
+import database
 # Finish importing libraries
 
 # Initialization
@@ -80,22 +80,32 @@ def handle_message(event):
                     請輸入「確認使用 NTU mail crawler」。""")
         )
     if input_text == "確認使用 NTU mail crawler":
+        reply_text = """好的，已開啟此功能。
+                    接下來請按照下面格式輸入記中帳密：
+                    「crawler new account b092070XX XXXXXXXXXXX」。
+                    （如果之後要更新帳號，可以輸入「crawler update account」）
+                    除此之外，輸入帳密之前，請確定收件匣中至少有一封信~"""
         line_bot_api.reply_message(
             event.reply_token,
-            TextSendMessage(text="""好的，已開啟此功能。
-                接下來請按照下面格式輸入記中帳密：
-                「crawler new account b09207052 A123456789」。
-                （如果之後要更新帳號，可以輸入「crawler update account」）
-                除此之外，輸入帳密之前，請確定收件匣中至少有一封信~""")
+            TextSendMessage(reply_text)
         )
     if "crawler" in input_text:
         if "new account" in input_text:
             # Collect user information
+            user_id = event["sourse"]["user_id"]
             user_account = input_text.split(" ")[-2]
             password = input_text.split(" ")[-1]
             crawler = Crawler(user_account, password)
             last_uid = crawler.get_last_mail_id()
             # Finish collecting user information
+
+            # Insert the user data to the database
+            user_data = [user_id, user_account, password, last_uid]
+            database.insert_user_data(user_data)
+            reply_text = "已完成資料上傳，將開始自動檢查新信件"
+            line_bot_api.reply_message(
+                event.reply_token,
+                TextSendMessage(reply_text))
 # Finish defining functions
 
 
