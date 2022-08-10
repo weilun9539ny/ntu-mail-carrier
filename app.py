@@ -62,30 +62,30 @@ def handle_message(event):
             event.reply_token,
             TextSendMessage(text="你很有禮毛餒")
         )
-    if input_text == "show user id":
+    if input_text == "show user":
         line_bot_api.reply_message(
-            event.reply_token, text=str(event.source.user_id)
+            event.reply_token, text=str(event)
         )
     if input_text == "NTU mail crawler":
         line_bot_api.reply_message(
             event.reply_token,
             TextSendMessage(
                 text=
-                    """本功能可以每小時都檢查一次您的 NTU 信箱有沒有新的信，\n
-                    有的話就在這邊提醒你。\n
-                    但是會需要輸入您的記中帳密，\n
-                    並且會將該帳密和最新一封信件的編號儲存在線上資料庫。\n
-                    如有資安上的疑慮，請勿使用本功能。\n
+                    """本功能可以每小時都檢查一次您的 NTU 信箱有沒有新的信，
+                    有的話就在這邊提醒你。
+                    但是會需要輸入您的記中帳密，
+                    並且會將該帳密和最新一封信件的編號儲存在線上資料庫。
+                    如有資安上的疑慮，請勿使用本功能。
                     如果同意以上說明，且欲開啟本功能，
                     請輸入「確認使用 NTU mail crawler」。""")
         )
     if input_text == "確認使用 NTU mail crawler":
         line_bot_api.reply_message(
             event.reply_token,
-            TextSendMessage(text="""好的，已開啟此功能。\n
-                接下來請按照下面格式輸入記中帳密：\n
-                「crawler new account b09207052 A123456789」。\n
-                （如果之後要更新帳號，可以輸入「crawler update account」）\n
+            TextSendMessage(text="""好的，已開啟此功能。
+                接下來請按照下面格式輸入記中帳密：
+                「crawler new account b09207052 A123456789」。
+                （如果之後要更新帳號，可以輸入「crawler update account」）
                 除此之外，輸入帳密之前，請確定收件匣中至少有一封信~""")
         )
     if "crawler" in input_text:
