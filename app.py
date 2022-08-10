@@ -59,7 +59,7 @@ def handle_message(event):
         )
     if "crawler" in input_text:
         if input_text == "NTU mail crawler":
-            reply_text = "本功能可以每小時都檢查一次您的 NTU 信箱有沒有新的信，\n有的話就在這邊提醒你。\n但是會需要輸入您的記中帳密，\n並且會將該帳密和最新一封信件的編號儲存在線上資料庫。\n\如有資安上的疑慮，請勿使用本功能。\n如果同意以上說明，且欲開啟本功能，\n請輸入「確認使用 NTU mail crawler」。"
+            reply_text = "本功能可以每小時都檢查一次您的 NTU 信箱有沒有新的信，\n有的話就在這邊提醒你。\n但是會需要輸入您的記中帳密，\n並且會將該帳密和最新一封信件的編號儲存在線上資料庫。\n如有資安上的疑慮，請勿使用本功能。\n如果同意以上說明，且欲開啟本功能，\n請輸入「確認使用 NTU mail crawler」。"
             line_bot_api.reply_message(
                 event.reply_token,
                 TextSendMessage(reply_text)

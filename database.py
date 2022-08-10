@@ -16,7 +16,7 @@ def insert_user_data(user_data_list):
     # Finish connecting the database
 
     # Insert the new data
-    table_columns = ["user_id", "account", "password", "email_uid"]
+    table_columns = '("user_id", "account", "password", "email_uid")'
     insert_query = f"INSERT INTO account {table_columns} VALUES (%s, %s, %s, %s);"
     cursor.execute(insert_query, user_data_list)
     connection.commit()
@@ -55,8 +55,8 @@ def update_last_uid(user_id, last_uid):
     # Finish connecting the database
 
     # Update the data
-    update_query = f"UPDATE account SET email_uid = {last_uid} WHERE user_id = {user_id}"
-    cursor.execute(update_query)
+    update_query = f'UPDATE account SET email_uid = {last_uid} WHERE user_id = %s'
+    cursor.execute(update_query, (user_id, ))
     connection.commit()
     cursor.close()
     # Finish updating the data
@@ -78,7 +78,7 @@ if __name__ == "__main__":
         account VARCHAR (50) UNIQUE NOT NULL,
         password VARCHAR (50) NOT NULL,
         email_uid NUMERIC NOT NULL
-    );"""
+        );"""
     cursor.execute(create_table_query)
     connection.commit()
     cursor.close()
