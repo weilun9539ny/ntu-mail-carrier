@@ -2,8 +2,9 @@
 import requests
 from bs4 import BeautifulSoup as bs4
 import json
-import datetime
 import time
+
+import database
 # Finish importing libraries
 
 # Import a class
@@ -13,11 +14,9 @@ from mail import Mail
 
 # Define a class
 class Crawler:
-    def __init__(self, user_data_list):
-        self.user_line = user_data_list[0]
-        self.account = user_data_list[1]
-        self.password = user_data_list[2]
-        self.last_uid = user_data_list[3]
+    def __init__(self, account, password):
+        self.account = account
+        self.password = password
 
 
     def _login(self, s):
