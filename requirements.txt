@@ -5,5 +5,3 @@ psycopg2
 beautifulsoup4
 requests
 datetime
-time
-json
