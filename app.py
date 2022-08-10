@@ -64,48 +64,54 @@ def handle_message(event):
         )
     if input_text == "show user":
         line_bot_api.reply_message(
-            event.reply_token, text=str(event)
+            event.reply_token, TextSendMessage(line_bot_api.get_profile("<user_id>"))
         )
     if input_text == "NTU mail crawler":
         line_bot_api.reply_message(
             event.reply_token,
             TextSendMessage(
                 text=
-                    """本功能可以每小時都檢查一次您的 NTU 信箱有沒有新的信，
-                    有的話就在這邊提醒你。
-                    但是會需要輸入您的記中帳密，
-                    並且會將該帳密和最新一封信件的編號儲存在線上資料庫。
-                    如有資安上的疑慮，請勿使用本功能。
-                    如果同意以上說明，且欲開啟本功能，
-                    請輸入「確認使用 NTU mail crawler」。""")
+                    "本功能可以每小時都檢查一次您的 NTU 信箱有沒有新的信，\n\
+                    有的話就在這邊提醒你。\n\
+                    但是會需要輸入您的記中帳密，\n\
+                    並且會將該帳密和最新一封信件的編號儲存在線上資料庫。\n\
+                    如有資安上的疑慮，請勿使用本功能。\n\
+                    如果同意以上說明，且欲開啟本功能，\n\
+                    請輸入「確認使用 NTU mail crawler」。")
         )
     if input_text == "確認使用 NTU mail crawler":
-        reply_text = """好的，已開啟此功能。
-                    接下來請按照下面格式輸入記中帳密：
-                    「crawler new account b092070XX XXXXXXXXXXX」。
-                    （如果之後要更新帳號，可以輸入「crawler update account」）
-                    除此之外，輸入帳密之前，請確定收件匣中至少有一封信~"""
+        reply_text = "好的，已開啟此功能。\n\
+                    接下來請按照下面格式輸入記中帳密：\n\
+                    「crawler new account b092070XX XXXXXXXXXXX」。\n\
+                    （如果之後要更新帳號，可以輸入「crawler update account」）\n\
+                    除此之外，輸入帳密之前，請確定收件匣中至少有一封信~"
         line_bot_api.reply_message(
             event.reply_token,
             TextSendMessage(reply_text)
         )
     if "crawler" in input_text:
         if "new account" in input_text:
-            # Collect user information
-            user_id = event["sourse"]["user_id"]
-            user_account = input_text.split(" ")[-2]
-            password = input_text.split(" ")[-1]
-            crawler = Crawler(user_account, password)
-            last_uid = crawler.get_last_mail_id()
-            # Finish collecting user information
+            try:
+                # Collect user information
+                user_id = line_bot_api.get_profile('<user_id>')
+                user_account = input_text.split(" ")[-2]
+                password = input_text.split(" ")[-1]
+                crawler = Crawler(user_account, password)
+                last_uid = crawler.get_last_mail_id()
+                # Finish collecting user information
 
-            # Insert the user data to the database
-            user_data = [user_id, user_account, password, last_uid]
-            database.insert_user_data(user_data)
-            reply_text = "已完成資料上傳，將開始自動檢查新信件"
-            line_bot_api.reply_message(
-                event.reply_token,
-                TextSendMessage(reply_text))
+                # Insert the user data to the database
+                user_data = [user_id, user_account, password, last_uid]
+                database.insert_user_data(user_data)
+                reply_text = "已完成資料上傳，將開始自動檢查新信件"
+                line_bot_api.reply_message(
+                    event.reply_token,
+                    TextSendMessage(reply_text))
+            except:
+                line_bot_api.reply_message(
+                    event.reply_token,
+                    TextSendMessage("失敗了qq")
+                )
 # Finish defining functions
 
 
