@@ -42,7 +42,9 @@ def callback():
     try:
         handler.handle(body, signature)
     except InvalidSignatureError:
-        print("Invalid signature. Please check your channel access token/channel secret.")
+        invalid_message = "Invalid signature. Please check your "
+        invalid_message += "channel access token/channel secret."
+        print(invalid_message)
         abort(400)
 
     return 'OK'
@@ -53,47 +55,59 @@ def handle_message(event):
     input_text = event.message.text
 
     if input_text == "謝謝":
-        line_bot_api.reply_message(
-            event.reply_token,
-            TextSendMessage(text="你很有禮毛餒")
-        )
-    if "crawler" in input_text:
-        reply_text = crawler_commands(event)
-        line_bot_api.reply_message(event.reply_token, TextSendMessage(reply_text))
+        reply_text = "你很有禮毛餒"
+    if input_text == "功能介紹":
+        reply_text = "目前有的功能只有「NTU mail carrier」，\n其他功能還沒想法 or 懶得做www"
+        reply_text += "\n------\n可以直接輸入該功能，查看該功能的介紹。\n"
+        reply_text += "也可以在功能後面加上「command」，查看該功能有哪些指令。"
+    if "NTU mail carrier" in input_text:
+        reply_text = mail_carrier_commands(event)
+
+    line_bot_api.reply_message(event.reply_token, TextSendMessage(reply_text))
 
 
-def crawler_commands(event):
+def mail_carrier_commands(event):
     input_text = event.message.text
     user_id = event.source.user_id
 
-    if input_text == "NTU mail crawler":
-        reply_text = "本功能會每十分鐘檢查一次您的 NTU 信箱有沒有新的信，\n有的話會用訊息提醒！\n但是會需要輸入您的記中帳密，\n並且會將該帳密和最新一封信件的編號儲存在線上資料庫。\n如有資安上的疑慮，請勿使用本功能。\n如果同意以上說明，且欲開啟本功能，\n請輸入「確認使用 NTU mail crawler」。"
-    elif input_text == "確認使用 NTU mail crawler":
-        reply_text = "好的，已開啟此功能。\n接下來請先確認收件匣中至少有一封信，\n然後按照下面格式輸入記中帳密：\n「crawler new account b092070XX XXXXXXXXXXX」。"
+    if input_text == "NTU mail carrier":
+        reply_text = "本功能會每十分鐘檢查一次您的 NTU 信箱有沒有新的信，\n有的話會用訊息提醒！\n\n"
+        reply_text += "但是會需要輸入您的記中帳密，\n並且會將該帳密和最新一封信件的編號儲存在線上資料庫。\n"
+        reply_text += "使用過程中取得的所有資訊均僅會使用於本程序，絕不會使用在其他地方。\n如有資安上的疑慮，請勿使用本功能。"
+        reply_text += "\n\n若同意以上說明，可以承擔風險，且欲開啟本功能，\n"
+        reply_text += "請按照以下步驟開啟此功能：\n\n1. 確認目前收件匣中至少有一封信。\n2. 按照以下格式輸入記中帳密："
+        reply_text += "「NTU mail carrier new account b092070XX XXXXXXXXX」。"
     elif "command" in input_text:
-        reply_text = "目前可用的指令有：\n1. crawler command: 查詢所有可用的指令。\n\n2. crawler new account '學號' '密碼': 在指令後面接著記中帳密，就可以加入新帳號。\n\n3. crawler update password '學號' '密碼': 更新該學號的密碼\n\n4. crawler delete account '學號': 把該組記中帳密從資料庫中移除"
+        reply_text = "目前可用的指令有：\n1. NTU mail carrier command：查詢本功能的所有指令\n\n"
+        reply_text += "2. NTU mail carrier new account '學號' '密碼'：加入新的記中帳號\n\n"
+        reply_text += "3. NTU mail carrier update password '學號' '密碼'：更新密碼\n\n"
+        reply_text += "4. NTU mail carrier delete account '學號'：把該記中帳密從資料庫中移除"
     elif "new account" in input_text:
         try:
             new_account(user_id, input_text)
-            reply_text = "已完成資料上傳，將開始自動檢查新信件!!!\n如果要查詢其他指令，\n請輸入「crawler command」~"
-        except:
+            reply_text = "已成功開啟此功能，並且完成資料上傳，將開始自動檢查新信件!!!\n"
+            reply_text += "如果要查詢其他指令，\n請輸入「NTU mail carrier command」~"
+        except Exception:
             reply_text = "失敗了qq\n檢查看看帳密有打錯嗎?"
     elif "update password" in input_text:
         try:
             [account, password] = input_text.split(' ')[-2:]
-            database.update_user_info(user_id, account=account, password=password)
+            database.update_user_info(
+                user_id,
+                account=account,
+                password=password)
             reply_text = f"已更新{account}的密碼~"
-        except:
+        except Exception:
             reply_text = "失敗了qq\n"
     elif "delete account" in input_text:
         try:
             account = input_text.split(" ")[-1]
             database.delete_data(user_id, account)
             reply_text = f"已刪除{account}的學號，\n以及資料庫中所有和該學號有關的資料。\n感謝您的使用~"
-        except:
+        except Exception:
             reply_text = "失敗了qq\n可能是資料庫中已經沒有該學號的資料，\n有其他問題請聯絡渭毛本人~"
     else:
-        reply_text = "請確認輸入指令是否正確，或是洽詢渭毛本人w"
+        reply_text = "請確認輸入指令是否正確，或是聯絡渭毛本人w"
     return reply_text
 
 
