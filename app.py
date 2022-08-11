@@ -9,9 +9,6 @@ from linebot.exceptions import (
 )
 from linebot.models import (
     MessageEvent, TextMessage, TextSendMessage,
-    TemplateSendMessage, ConfirmTemplate, MessageAction,
-    QuickReply, QuickReplyButton,
-    PostbackAction, PostbackEvent
 )
 import os
 import psycopg2
@@ -56,6 +53,8 @@ def handle_message(event):
 
     if input_text == "謝謝":
         reply_text = "你很有禮毛餒"
+    if input_text == "阿彌陀佛狒狒":
+        reply_text = input_text
     if input_text == "功能介紹":
         reply_text = "目前有的功能只有「NTU mail carrier」，\n其他功能還沒想法 or 懶得做www"
         reply_text += "\n------\n可以直接輸入該功能，查看該功能的介紹。\n"
@@ -72,7 +71,7 @@ def mail_carrier_commands(event):
 
     if input_text == "NTU mail carrier":
         reply_text = "本功能會每十分鐘檢查一次您的 NTU 信箱有沒有新的信，\n有的話會用訊息提醒！\n\n"
-        reply_text += "但是會需要輸入您的記中帳密，\n並且會將該帳密和最新一封信件的編號儲存在線上資料庫。\n"
+        reply_text += "只是本功能需要輸入您的記中帳密，\n並且會將該帳密和最新一封信件的編號儲存在線上資料庫。\n"
         reply_text += "使用過程中取得的所有資訊均僅會使用於本程序，絕不會使用在其他地方。\n如有資安上的疑慮，請勿使用本功能。"
         reply_text += "\n\n若同意以上說明，可以承擔風險，且欲開啟本功能，\n"
         reply_text += "請按照以下步驟開啟此功能：\n\n1. 確認目前收件匣中至少有一封信。\n2. 按照以下格式輸入記中帳密："
@@ -119,7 +118,7 @@ def new_account(user_id, input_text):
     # Finish collecting user information
 
     # Insert the user data to the database
-    user_data = [user_id, account, password, last_uid]      
+    user_data = [user_id, account, password, last_uid]
     database.insert_user_data(user_data)
     # Finish inserting user data
 # Finish defining functions
