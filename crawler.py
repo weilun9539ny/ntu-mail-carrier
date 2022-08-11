@@ -42,7 +42,7 @@ class Crawler:
         # Login with user and password
         login_req = s.post(login_url, data=login_data, allow_redirects=True,
                             headers=headers)
-        time.sleep(2)
+        time.sleep(1)
 
 
     def _mail_info_intepreter(self, mail):
@@ -105,7 +105,6 @@ class Crawler:
 
                 mail_list.append(new_mail)  # Store the information
                 i_mail += 1
-            time.sleep(2)
         return mail_list
 
 

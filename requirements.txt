@@ -1,7 +1,5 @@
 line-bot-sdk
 flask
-numpy
 psycopg2
 beautifulsoup4
 requests
-datetime
