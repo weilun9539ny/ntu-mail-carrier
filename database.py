@@ -63,11 +63,12 @@ def update_user_info(user_id, last_uid=-999, account="unchanged", password="unch
 
     # Update the data
     if last_uid != -999:
-        update_command = f'UPDATE account SET email_uid = {last_uid} WHERE user_id = %s'
+        update_command = 'UPDATE account SET email_uid = %s WHERE user_id = %s'
+        cursor.execute(update_command, (last_uid, user_id, ))
     elif (account != "unchange") and (password != "unchange"):
-        update_command = f"UPDATE account SET account = {account}, password = {password} WHERE user_id = %s"
+        update_command = "UPDATE account SET password = %s WHERE user_id = %s AND account = %s"
+        cursor.execute(update_command, (password, user_id, account, ))
 
-    cursor.execute(update_command, (user_id, ))
     connection.commit()
     cursor.close()
     # Finish updating the data
@@ -82,8 +83,8 @@ def delete_data(user_id, account):
         port="5432")
     cursor = connection.cursor()
 
-    delete_command = f"DELETE FROM account WHERE user_id = {user_id} AND account = {account}"
-    cursor.execute(delete_command)
+    delete_command = "DELETE FROM account WHERE user_id = %s AND account = %s"
+    cursor.execute(delete_command, (user_id, account))
     connection.commit()
     cursor.close()
 # Finish defining functions
@@ -110,6 +111,6 @@ if __name__ == "__main__":
     cursor.execute("SELECT * FROM account")
     data = cursor.fetchall()
     print(data)
-    connection.commit()
+    # connection.commit()
     cursor.close()
 # Finish creating the table

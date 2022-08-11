@@ -108,33 +108,6 @@ def new_account(user_id, input_text):
     user_data = [user_id, account, password, last_uid]      
     database.insert_user_data(user_data)
     # Finish inserting user data
-
-
-@handler.add(MessageEvent, message=TextMessage)
-def auto_check_mail(event):
-    user_data_list = database.select_data()
-    for user_data in user_data_list:
-        user_id = user_data[1]
-        crawler = Crawler(user_data[2], user_data[3])
-        all_mail = crawler.get_mail(user_data[-1])
-
-        if all_mail != []:
-            # Update the last email uid in the database
-            last_uid = all_mail[0].uid
-            # database.update_user_info(user_id, last_uid=last_uid)
-            # Finish updating last email uid
-
-            # Prepare message
-            push_message = ""
-            for i in range(len(all_mail)):
-                push_message += f"信件 {i + 1}：\n"
-                push_message += str(all_mail[i])
-                if i < (len(all_mail) - 1):
-                    push_message += "\n-----\n"
-            # Finish preparing message
-
-            # Send line message
-            line_bot_api.push_message(user_id, TextSendMessage(push_message))
 # Finish defining functions
 
 
@@ -142,5 +115,4 @@ def auto_check_mail(event):
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
-    auto_check_mail()
 # Finish running the program
