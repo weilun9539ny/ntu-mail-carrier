@@ -1,17 +1,26 @@
-# Import libraries
-from flask import Flask, request, abort
+# !/usr/bin/env python3
+# -*- coding: utf-8 -*-
+# Created Date: 2022/08/12
+# Author: Wei-Lun Lin
+# Version: 1.0
+# Email: weilun9539ny@gmail.com
+# Status: Product
 
+# Import libraries
+import os
+from flask import Flask, request, abort
 from linebot import (
-    LineBotApi, WebhookHandler
+    LineBotApi,
+    WebhookHandler
 )
 from linebot.exceptions import (
     InvalidSignatureError
 )
 from linebot.models import (
-    MessageEvent, TextMessage, TextSendMessage,
+    MessageEvent,
+    TextMessage,
+    TextSendMessage,
 )
-import os
-import psycopg2
 
 from crawler import Crawler
 import database
@@ -94,7 +103,8 @@ def mail_carrier_commands(event):
             database.update_user_info(
                 user_id,
                 account=account,
-                password=password)
+                password=password
+            )
             reply_text = f"已更新{account}的密碼~"
         except Exception:
             reply_text = "失敗了qq\n"

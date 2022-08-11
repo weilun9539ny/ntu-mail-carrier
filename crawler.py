@@ -1,10 +1,16 @@
+# !/usr/bin/env python3
+# -*- coding: utf-8 -*-
+# Created Date: 2022/08/12
+# Author: Wei-Lun Lin
+# Version: 1.0
+# Email: weilun9539ny@gmail.com
+# Status: Product
+
 # Import libraries
+import time
+import json
 import requests
 from bs4 import BeautifulSoup as bs4
-import json
-import time
-
-import database
 # Finish importing libraries
 
 # Import a class
@@ -13,11 +19,10 @@ from mail import Mail
 
 
 # Define a class
-class Crawler:
+class Crawler(object):
     def __init__(self, account, password):
         self.account = account
         self.password = password
-
 
     def _login(self, s):
         # Set up
@@ -40,10 +45,13 @@ class Crawler:
         # Finish finding the input locations
 
         # Login with user and password
-        login_req = s.post(login_url, data=login_data, allow_redirects=True,
-                            headers=headers)
+        login_req = s.post(
+            login_url,
+            data=login_data,
+            allow_redirects=True,
+            headers=headers
+        )
         time.sleep(1)
-
 
     def _mail_info_intepreter(self, mail):
         # Cope with the string
@@ -62,7 +70,7 @@ class Crawler:
         i_3 = fromto.find("Address") + 9
         i_4 = fromto.find("<\span><\span>") - 13
         email_address = fromto[i_1: i_2]
-        sender = fromto[i_3 : i_4]
+        sender = fromto[i_3: i_4]
 
         index_id_begin = mail.find("add_message_row") + 16
         index_id_end = begin_index - 1
@@ -74,10 +82,10 @@ class Crawler:
         # Finish creating a mail object
         return new_mail
 
-
     def get_mail(self, last_uid):
         # Set up
-        inbox_url = "https://wmail1.cc.ntu.edu.tw/rc/?_task=mail&_action=list&_refresh=1&_layout=widescreen&_mbox=INBOX&_remote=1"
+        inbox_url = "https://wmail1.cc.ntu.edu.tw/rc/?_task=mail&_action=list\
+            &_refresh=1&_layout=widescreen&_mbox=INBOX&_remote=1"
         mail_list = []
         i_mail = 0
         # Finish setting up
@@ -107,10 +115,10 @@ class Crawler:
                 i_mail += 1
         return mail_list
 
-
     def get_last_mail_id(self):
         # Set up
-        inbox_url = "https://wmail1.cc.ntu.edu.tw/rc/?_task=mail&_action=list&_refresh=1&_layout=widescreen&_mbox=INBOX&_remote=1"
+        inbox_url = "https://wmail1.cc.ntu.edu.tw/rc/?_task=mail&_action=list\
+            &_refresh=1&_layout=widescreen&_mbox=INBOX&_remote=1"
         # Finish setting up
 
         with requests.Session() as s:
@@ -139,4 +147,4 @@ if __name__ == "__main__":
     uid = crawler.get_last_mail_id()
     # print(mail)
     print(uid)
-# Finish testing code 
+# Finish testing code

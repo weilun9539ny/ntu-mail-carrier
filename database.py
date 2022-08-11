@@ -1,3 +1,11 @@
+# !/usr/bin/env python3
+# -*- coding: utf-8 -*-
+# Created Date: 2022/08/12
+# Author: Wei-Lun Lin
+# Version: 1.0
+# Email: weilun9539ny@gmail.com
+# Status: Product
+
 import psycopg2
 
 
@@ -11,13 +19,15 @@ def insert_user_data(user_data_list):
         user="jvfmxlbipqvxrd",
         password="c082530a6c4d1d130e7db89e15f8c135b1a358efbe22acd3bbb0f44624a6d4cc",
         host="ec2-34-200-35-222.compute-1.amazonaws.com",
-        port="5432")
+        port="5432"
+    )
     cursor = connection.cursor()
     # Finish connecting the database
 
     # Insert the new data
     table_columns = '("user_id", "account", "password", "email_uid")'
-    insert_command = f"INSERT INTO account {table_columns} VALUES (%s, %s, %s, %s);"
+    insert_command = f"INSERT INTO account {table_columns} "
+    insert_command += "VALUES (%s, %s, %s, %s);"
     cursor.execute(insert_command, user_data_list)
     connection.commit()
     cursor.close()
@@ -33,7 +43,8 @@ def select_data(user_id="all"):
         user="jvfmxlbipqvxrd",
         password="c082530a6c4d1d130e7db89e15f8c135b1a358efbe22acd3bbb0f44624a6d4cc",
         host="ec2-34-200-35-222.compute-1.amazonaws.com",
-        port="5432")
+        port="5432"
+    )
     cursor = connection.cursor()
     # Finish connecting the database
 
@@ -57,7 +68,8 @@ def update_user_info(user_id, last_uid=-999, account="unchanged", password="unch
         user="jvfmxlbipqvxrd",
         password="c082530a6c4d1d130e7db89e15f8c135b1a358efbe22acd3bbb0f44624a6d4cc",
         host="ec2-34-200-35-222.compute-1.amazonaws.com",
-        port="5432")
+        port="5432"
+    )
     cursor = connection.cursor()
     # Finish connecting the database
 
@@ -66,7 +78,8 @@ def update_user_info(user_id, last_uid=-999, account="unchanged", password="unch
         update_command = 'UPDATE account SET email_uid = %s WHERE user_id = %s'
         cursor.execute(update_command, (last_uid, user_id, ))
     elif (account != "unchange") and (password != "unchange"):
-        update_command = "UPDATE account SET password = %s WHERE user_id = %s AND account = %s"
+        update_command = "UPDATE account SET password = %s "
+        update_command += "WHERE user_id = %s AND account = %s"
         cursor.execute(update_command, (password, user_id, account, ))
 
     connection.commit()
@@ -80,7 +93,8 @@ def delete_data(user_id, account):
         user="jvfmxlbipqvxrd",
         password="c082530a6c4d1d130e7db89e15f8c135b1a358efbe22acd3bbb0f44624a6d4cc",
         host="ec2-34-200-35-222.compute-1.amazonaws.com",
-        port="5432")
+        port="5432"
+    )
     cursor = connection.cursor()
 
     delete_command = "DELETE FROM account WHERE user_id = %s AND account = %s"
@@ -99,18 +113,14 @@ if __name__ == "__main__":
         host="ec2-34-200-35-222.compute-1.amazonaws.com",
         port="5432")
     cursor = connection.cursor()
-    # create_table_command = """CREATE TABLE account(
-    #     user_index serial PRIMARY KEY,
-    #     user_id VARCHAR (100) UNIQUE NOT NULL,
-    #     account VARCHAR (50) UNIQUE NOT NULL,
-    #     password VARCHAR (50) NOT NULL,
-    #     email_uid NUMERIC NOT NULL
-    #     );"""
-    # cursor.execute(create_table_command)
-    # cursor.execute("DELETE FROM account WHERE user_index = 3")
-    cursor.execute("SELECT * FROM account")
-    data = cursor.fetchall()
-    print(data)
-    # connection.commit()
+    create_table_command = """CREATE TABLE account(
+        user_index serial PRIMARY KEY,
+        user_id VARCHAR (100) UNIQUE NOT NULL,
+        account VARCHAR (50) UNIQUE NOT NULL,
+        password VARCHAR (50) NOT NULL,
+        email_uid NUMERIC NOT NULL
+        );"""
+    cursor.execute(create_table_command)
+    connection.commit()
     cursor.close()
 # Finish creating the table

@@ -1,15 +1,23 @@
-# Import libraries
+# !/usr/bin/env python3
+# -*- coding: utf-8 -*-
+# Created Date: 2022/08/12
+# Author: Wei-Lun Lin
+# Version: 1.0
+# Email: weilun9539ny@gmail.com
+# Status: Product
+
+# Import modules
 from linebot import LineBotApi
 from linebot.models import TextSendMessage
-import os
 
 from crawler import Crawler
 import database
-# Finish importing libraries
+# Finish importing modules
 
 # Initialization
 line_bot_api = LineBotApi('quud2/CCW6i43uHAomVe8bMzRjHXbH5i/uqv82BmH6KqEa1BtTn1DU+U1yEnS6W90Sd1y+OW9QSsEmxNU83vl1RQcnj/7c4Qe2B8kSoz4sbzlbNTb1db9ygfHr3nobUlBu9ZWNj5bQFn+wPQ2dc7tgdB04t89/1O/w1cDnyilFU=')
 # Finish initializing
+
 
 def auto_check_mail():
     user_data_list = database.select_data()
