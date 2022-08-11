@@ -34,7 +34,8 @@ def auto_check_mail():
             # Finish preparing message
 
             # Send line message
-        line_bot_api.push_message(user_id, TextSendMessage(push_message))
+            line_bot_api.push_message(user_id, TextSendMessage(push_message))
+            # Finish sending message
 # Finish defining functions
 
 

@@ -8,11 +8,10 @@ class Mail:
     
 
     def __repr__(self):
-        uid_str = f"uid: {self.uid}\n"
-        subject_str = f"subject: {self.subject}\n"
-        time_str = f"Send time: {self.datetime}\n"
-        sender_str = f"Sender: {self.sender}\n"
-        address_str = f"Email address: {self.address}\n"
+        subject_str = f"主旨：{self.subject}\n"
+        time_str = f"寄達時間：{self.datetime}\n"
+        sender_str = f"寄件者：{self.sender}\n"
+        address_str = f"寄件者電子郵件：{self.address}"
 
-        output_str = "Email information:\n" + uid_str + subject_str + time_str + sender_str + address_str
+        output_str = subject_str + time_str + sender_str + address_str
         return output_str
