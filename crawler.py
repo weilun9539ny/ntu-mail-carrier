@@ -56,7 +56,9 @@ class Crawler(object):
     def _mail_info_intepreter(self, mail):
         # Cope with the string
         begin_index = mail.find("subject") - 2
-        end_index = mail.find("seen") - 3
+        end_index = mail.find("}") + 1
+        print(mail)
+        # print(mail[begin_index: end_index])
         mail_dic = json.loads(mail[begin_index: end_index])
         # Done with the string, find the dictionary
 
