@@ -109,7 +109,7 @@ class Crawler(object):
                 # Finish getting a mail object
 
                 # Check if the mail was crawled
-                if new_mail.uid == last_uid:
+                if new_mail.uid <= last_uid:
                     break
                 # Finish checking older mail
 
@@ -145,8 +145,8 @@ if __name__ == "__main__":
     password = "Chaeyoung0423"
 
     crawler = Crawler(account, password)
-    # mail = crawler.get_mail()
-    uid = crawler.get_last_mail_id()
-    # print(mail)
-    print(uid)
+    mail = crawler.get_mail(2815)
+    # uid = crawler.get_last_mail_id()
+    print(mail)
+    # print(uid)
 # Finish testing code
