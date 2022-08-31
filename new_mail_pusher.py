@@ -33,9 +33,10 @@ def auto_check_mail():
             # Finish updating last email uid
 
             # Prepare message
-            push_message = ""
+            push_message = "收信囉~\n-----\n"
             for i in range(len(all_mail)):
-                push_message += f"信件 {i + 1}：\n"
+                if len(all_mail) != 1:
+                    push_message += f"信件 {i + 1}：\n"
                 push_message += str(all_mail[i])
                 if i < (len(all_mail) - 1):
                     push_message += "\n-----\n"
