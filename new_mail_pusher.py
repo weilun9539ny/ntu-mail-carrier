@@ -38,8 +38,6 @@ def auto_check_mail():
                 if len(all_mail) != 1:
                     push_message += f"--------\n信件 {i + 1}：\n"
                 push_message += str(all_mail[i])
-                if i < (len(all_mail) - 1):
-                    push_message += "\n-----\n"
             # Finish preparing message
 
             # Send line message
