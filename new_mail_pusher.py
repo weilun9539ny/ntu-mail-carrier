@@ -21,6 +21,8 @@ line_bot_api = LineBotApi('quud2/CCW6i43uHAomVe8bMzRjHXbH5i/uqv82BmH6KqEa1BtTn1D
 
 def auto_check_mail():
     user_data_list = database.select_data()
+    tmp_token = 0
+
     for user_data in user_data_list:
         user_id = user_data[1]
         crawler = Crawler(user_data[2], user_data[3])
@@ -36,12 +38,18 @@ def auto_check_mail():
             push_message = "收信囉~\n"
             for i in range(len(all_mail)):
                 if len(all_mail) != 1:
-                    push_message += f"--------\n信件 {i + 1}：\n"
+                    push_message += f"\n--------\n信件 {i + 1}：\n"
                 push_message += str(all_mail[i])
             # Finish preparing message
 
             # Send line message
             line_bot_api.push_message(user_id, TextSendMessage(push_message))
+
+            for i in range(len(all_mail)):
+                if "免修" in all_mail[i].subject:
+                    tmp_token += 1
+                if tmp_token != 0:
+                    line_bot_api.push_message(user_id, TextSendMessage("提醒黃慈要弄免修的東西!!!"))
             # Finish sending message
 # Finish defining functions
 

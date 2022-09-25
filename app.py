@@ -62,12 +62,14 @@ def handle_message(event):
 
     if input_text == "謝謝":
         reply_text = "你很有禮毛餒"
-    if input_text == "阿彌陀佛狒狒":
+    elif input_text == "阿彌陀佛狒狒":
         reply_text = input_text
-    if input_text == "功能介紹":
+
+    if "功能介紹" in input_text:
         reply_text = "目前有的功能只有「NTU mail carrier」，\n其他功能還沒想法 or 懶得做www"
         reply_text += "\n------\n可以直接輸入該功能，查看該功能的介紹。\n"
         reply_text += "也可以在功能後面加上「command」，查看該功能有哪些指令。"
+
     if "NTU mail carrier" in input_text:
         reply_text = mail_carrier_commands(event)
 
