@@ -141,8 +141,8 @@ class Crawler(object):
 
 # Test code
 if __name__ == "__main__":
-    account = "b09207052"
-    password = "Chaeyoung0423"
+    account = ""
+    password = ""
 
     crawler = Crawler(account, password)
     mail = crawler.get_mail(2815)
